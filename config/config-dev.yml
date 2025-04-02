@@ -1,2 +1,2 @@
 nats:
-  host: 'nats://localhost:4222'
+  host: 'nats://realtime-messaging-nats:4222'

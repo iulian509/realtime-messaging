@@ -4,3 +4,12 @@ services:
     image: nats:2.11
     ports:
       - "4222:4222"
+  publisher:
+    build:
+      context: .
+      dockerfile: docker/publisher/Dockerfile
+    image: publisher-service:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - nats
