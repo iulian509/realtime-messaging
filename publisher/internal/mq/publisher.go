@@ -4,8 +4,12 @@ import (
 	"github.com/nats-io/nats.go"
 )
 
+type NATSConnection interface {
+	Publish(subj string, data []byte) error
+}
+
 type Publisher struct {
-	conn *nats.Conn
+	conn NATSConnection
 }
 
 func NewPublisher(url string) (*Publisher, error) {
