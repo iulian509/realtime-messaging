@@ -1,0 +1,2 @@
+nats:
+  host: 'nats://localhost:4222'
