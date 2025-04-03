@@ -9,7 +9,7 @@ type NATSConnection interface {
 }
 
 type Publisher struct {
-	conn NATSConnection
+	Conn NATSConnection
 }
 
 func NewPublisher(url string) (*Publisher, error) {
@@ -18,11 +18,11 @@ func NewPublisher(url string) (*Publisher, error) {
 		return nil, err
 	}
 
-	return &Publisher{conn: nc}, nil
+	return &Publisher{Conn: nc}, nil
 }
 
 func (p *Publisher) PublishMessage(message []byte) error{
-	err := p.conn.Publish("subject", message)
+	err := p.Conn.Publish("subject", message)
 	if err != nil {
 		return err
 	}

@@ -23,7 +23,7 @@ func TestNewPublisherInvalidConnection(t *testing.T) {
 
 func TestPublishMessage(t *testing.T) {
 	mockedConn := new(MockNATSConnection)
-	publisher := &Publisher{conn: mockedConn}
+	publisher := &Publisher{Conn: mockedConn}
 
 	const (
 		publish = "Publish"
