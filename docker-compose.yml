@@ -13,3 +13,12 @@ services:
       - "3000:3000"
     depends_on:
       - nats
+  subscriber:
+    build:
+      context: .
+      dockerfile: docker/subscriber/Dockerfile
+    image: subscriber-service:latest
+    ports:
+      - "3001:3001"
+    depends_on:
+      - nats
