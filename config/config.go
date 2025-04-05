@@ -10,7 +10,7 @@ import (
 
 type Config struct {
 	Nats struct {
-		Host string `yaml:"host"` 
+		Host string `yaml:"host"`
 	}
 }
 

@@ -26,8 +26,8 @@ func TestPublishMessage(t *testing.T) {
 	publisher := &Publisher{Conn: mockedConn}
 
 	const (
-		publish = "Publish"
-		subject = "subject"
+		publish     = "Publish"
+		subject     = "subject"
 		testMessage = "test message"
 	)
 
@@ -38,7 +38,7 @@ func TestPublishMessage(t *testing.T) {
 		assert.NoError(t, err)
 		mockedConn.AssertExpectations(t)
 	})
-	t.Run("failing publish", func(t *testing.T){
+	t.Run("failing publish", func(t *testing.T) {
 		mockedConn.On(publish, subject, []byte(testMessage)).Return(assert.AnError).Once()
 
 		err := publisher.PublishMessage([]byte(testMessage))

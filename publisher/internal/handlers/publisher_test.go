@@ -25,11 +25,11 @@ func TestPublisherHandler(t *testing.T) {
 	// Set up mocks
 	mockedConn := new(MockNATSConnection)
 	publisher := &mq.Publisher{Conn: mockedConn}
-	env := &Env{PublisherClient: publisher}
+	deps := &Dependencies{PublisherClient: publisher}
 
 	// Set up test handler and server
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		env.PublisherHandler(w, r)
+		deps.PublisherHandler(w, r)
 	})
 	server := httptest.NewServer(handler)
 	defer server.Close()
@@ -41,8 +41,8 @@ func TestPublisherHandler(t *testing.T) {
 	defer ws.Close()
 
 	const (
-		publish = "Publish"
-		subject = "subject"
+		publish     = "Publish"
+		subject     = "subject"
 		testMessage = "test message"
 	)
 
@@ -51,9 +51,9 @@ func TestPublisherHandler(t *testing.T) {
 
 		err = ws.WriteMessage(websocket.TextMessage, []byte(testMessage))
 		assert.NoError(t, err)
-		
+
 		// Wait for the handler to process the message
-		time.Sleep(100*time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 
 		mockedConn.AssertExpectations(t)
 	})
@@ -64,7 +64,7 @@ func TestPublisherHandler(t *testing.T) {
 		assert.NoError(t, err, "message writing should succeed even if NATS publish fails")
 
 		// Wait for the handler to process the message
-		time.Sleep(100*time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 
 		mockedConn.AssertExpectations(t)
 	})

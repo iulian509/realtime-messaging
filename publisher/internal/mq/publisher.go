@@ -21,7 +21,7 @@ func NewPublisher(url string) (*Publisher, error) {
 	return &Publisher{Conn: nc}, nil
 }
 
-func (p *Publisher) PublishMessage(message []byte) error{
+func (p *Publisher) PublishMessage(message []byte) error {
 	err := p.Conn.Publish("subject", message)
 	if err != nil {
 		return err

@@ -20,11 +20,11 @@ func main() {
 		log.Fatalf("failed to connect to NATS server: %v", err)
 	}
 
-	env := &handlers.Env{
+	deps := &handlers.Dependencies{
 		PublisherClient: publisherClient,
 	}
 
-	http.HandleFunc("/publish", env.PublisherHandler)
+	http.HandleFunc("/publish", deps.PublisherHandler)
 	log.Println("publisher service running on :3000")
 	err = http.ListenAndServe(":3000", nil)
 	log.Fatalf("failed to start publisher service: %v", err)
