@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/iulian509/realtime-messaging/config"
+	"github.com/iulian509/realtime-messaging/internal/metrics"
 	"github.com/iulian509/realtime-messaging/subscriber/internal/handlers"
 	"github.com/iulian509/realtime-messaging/subscriber/internal/mq"
 )
@@ -20,12 +21,18 @@ func main() {
 		log.Fatalf("failed to connect to NATS server: %v", err)
 	}
 
+	metrics.InitMetrics()
+
 	deps := &handlers.Dependencies{
 		SubscriberClient: subscriberClient,
 	}
 
-	http.HandleFunc("/subscribe", deps.SubscriberHandler)
-	log.Println("subscriber service running on :3001")
+	http.HandleFunc("/metrics", metrics.PromHandler())
+	http.HandleFunc("/subscribe", metrics.PrometheusMiddleware(deps.SubscriberHandler))
+
 	err = http.ListenAndServe(":3001", nil)
-	log.Fatalf("failed to start subscriber service: %v", err)
+	log.Println("subscriber service running on :3001")
+	if err != nil {
+		log.Fatalf("failed to start subscriber service: %v", err)
+	}
 }

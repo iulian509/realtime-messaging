@@ -4,8 +4,10 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/iulian509/realtime-messaging/internal/metrics"
 	"github.com/iulian509/realtime-messaging/publisher/internal/mq"
 
 	iw "github.com/iulian509/realtime-messaging/internal/websocket"
@@ -34,6 +36,8 @@ func (deps *Dependencies) PublisherHandler(w http.ResponseWriter, r *http.Reques
 }
 
 func processMessages(ctx context.Context, cancel context.CancelFunc, conn *websocket.Conn, publisherClient *mq.Publisher) {
+	const endpoint = "/publish"
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -50,13 +54,21 @@ func processMessages(ctx context.Context, cancel context.CancelFunc, conn *webso
 				return
 			}
 			log.Printf("received message: %s", message)
+			metrics.MessagesReceived.WithLabelValues(endpoint).Inc()
+
+			startTime := time.Now()
 
 			err = publisherClient.PublishMessage(message)
 			if err != nil {
 				log.Printf("error publishing message: %v", err)
+				metrics.PublishErrors.WithLabelValues(endpoint).Inc()
 			} else {
 				log.Printf("published message: %s", message)
+				metrics.MessagesPublished.WithLabelValues(endpoint).Inc()
 			}
+
+			latency := time.Since(startTime).Seconds()
+			metrics.WebsocketLatency.WithLabelValues(endpoint).Observe(latency)
 		}
 	}
 }
