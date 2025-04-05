@@ -4,11 +4,13 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/iulian509/realtime-messaging/subscriber/internal/mq"
 	"github.com/nats-io/nats.go"
 
+	"github.com/iulian509/realtime-messaging/internal/metrics"
 	iw "github.com/iulian509/realtime-messaging/internal/websocket"
 )
 
@@ -36,16 +38,24 @@ func (deps *Dependencies) SubscriberHandler(w http.ResponseWriter, r *http.Reque
 
 func processMessages(ctx context.Context, cancel context.CancelFunc, conn *websocket.Conn, subscriberClient *mq.Subscriber) {
 	const subject = "subject"
+	const endpoint = "/subscribe"
 
 	subscription, err := subscriberClient.Subscribe(subject, func(msg *nats.Msg) {
+		startTime := time.Now()
+
 		log.Printf("received message on [%s]: %s", msg.Subject, string(msg.Data))
+		metrics.MessagesReceived.WithLabelValues(endpoint).Inc()
 
 		err := conn.WriteMessage(websocket.TextMessage, msg.Data)
 		if err != nil {
 			log.Printf("failed to send message to WebSocket: %v", err)
+			metrics.PublishErrors.WithLabelValues(endpoint).Inc()
 			cancel()
 			return
 		}
+		metrics.MessagesPublished.WithLabelValues(endpoint).Inc()
+		latency := time.Since(startTime).Seconds()
+		metrics.WebsocketLatency.WithLabelValues(endpoint).Observe(latency)
 	})
 	if err != nil {
 		log.Printf("failed to subscribe to subject %q: %v", subject, err)
