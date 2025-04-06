@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/iulian509/realtime-messaging/config"
+	"github.com/iulian509/realtime-messaging/internal/auth"
 	"github.com/iulian509/realtime-messaging/internal/metrics"
 	"github.com/iulian509/realtime-messaging/publisher/internal/handlers"
 	"github.com/iulian509/realtime-messaging/publisher/internal/mq"
@@ -28,7 +29,7 @@ func main() {
 	}
 
 	http.HandleFunc("/metrics", metrics.PromHandler())
-	http.HandleFunc("/publish", metrics.PrometheusMiddleware(deps.PublisherHandler))
+	http.HandleFunc("/publish", metrics.PrometheusMiddleware(auth.AuthMiddleware(deps.PublisherHandler)))
 
 	err = http.ListenAndServe(":3000", nil)
 	log.Println("publisher service running on :3000")
