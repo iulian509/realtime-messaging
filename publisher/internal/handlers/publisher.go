@@ -16,6 +16,11 @@ import (
 var upgrader = websocket.Upgrader{}
 
 func (deps *Dependencies) PublisherHandler(w http.ResponseWriter, r *http.Request) {
+	subject := r.URL.Query().Get("subject")
+	if subject == "" {
+		subject = "subject"
+	}
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Printf("WebSocket upgrade failed: %v", err)
@@ -32,10 +37,10 @@ func (deps *Dependencies) PublisherHandler(w http.ResponseWriter, r *http.Reques
 
 	go iw.PingConnection(ctx, cancel, conn)
 
-	processMessages(ctx, cancel, conn, deps.PublisherClient)
+	processMessages(ctx, cancel, subject, conn, deps.PublisherClient)
 }
 
-func processMessages(ctx context.Context, cancel context.CancelFunc, conn *websocket.Conn, publisherClient *mq.Publisher) {
+func processMessages(ctx context.Context, cancel context.CancelFunc, subject string, conn *websocket.Conn, publisherClient *mq.Publisher) {
 	const endpoint = "/publish"
 
 	for {
@@ -53,17 +58,17 @@ func processMessages(ctx context.Context, cancel context.CancelFunc, conn *webso
 				cancel()
 				return
 			}
-			log.Printf("received message: %s", message)
+			log.Printf("received message on [%s]: %s", subject, message)
 			metrics.MessagesReceived.WithLabelValues(endpoint).Inc()
 
 			startTime := time.Now()
 
-			err = publisherClient.PublishMessage(message)
+			err = publisherClient.PublishMessage(subject, message)
 			if err != nil {
 				log.Printf("error publishing message: %v", err)
 				metrics.PublishErrors.WithLabelValues(endpoint).Inc()
 			} else {
-				log.Printf("published message: %s", message)
+				log.Printf("published message on [%s]: %s", subject, message)
 				metrics.MessagesPublished.WithLabelValues(endpoint).Inc()
 			}
 

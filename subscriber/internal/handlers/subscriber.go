@@ -17,6 +17,11 @@ import (
 var upgrader = websocket.Upgrader{}
 
 func (deps *Dependencies) SubscriberHandler(w http.ResponseWriter, r *http.Request) {
+	subject := r.URL.Query().Get("subject")
+	if subject == "" {
+		subject = "subject"
+	}
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Printf("WebSocket upgrade failed: %v", err)
@@ -33,11 +38,10 @@ func (deps *Dependencies) SubscriberHandler(w http.ResponseWriter, r *http.Reque
 
 	go iw.PingConnection(ctx, cancel, conn)
 
-	processMessages(ctx, cancel, conn, deps.SubscriberClient)
+	processMessages(ctx, cancel, subject, conn, deps.SubscriberClient)
 }
 
-func processMessages(ctx context.Context, cancel context.CancelFunc, conn *websocket.Conn, subscriberClient *mq.Subscriber) {
-	const subject = "subject"
+func processMessages(ctx context.Context, cancel context.CancelFunc, subject string, conn *websocket.Conn, subscriberClient *mq.Subscriber) {
 	const endpoint = "/subscribe"
 
 	subscription, err := subscriberClient.Subscribe(subject, func(msg *nats.Msg) {

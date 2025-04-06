@@ -34,14 +34,14 @@ func TestPublishMessage(t *testing.T) {
 	t.Run("successful publish", func(t *testing.T) {
 		mockedConn.On(publish, subject, []byte(testMessage)).Return(nil).Once()
 
-		err := publisher.PublishMessage([]byte(testMessage))
+		err := publisher.PublishMessage(subject, []byte(testMessage))
 		assert.NoError(t, err)
 		mockedConn.AssertExpectations(t)
 	})
 	t.Run("failing publish", func(t *testing.T) {
 		mockedConn.On(publish, subject, []byte(testMessage)).Return(assert.AnError).Once()
 
-		err := publisher.PublishMessage([]byte(testMessage))
+		err := publisher.PublishMessage(subject, []byte(testMessage))
 		assert.Error(t, err)
 		mockedConn.AssertExpectations(t)
 	})
