@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/iulian509/realtime-messaging/config"
 	"github.com/iulian509/realtime-messaging/internal/auth"
+	"github.com/iulian509/realtime-messaging/internal/config"
 	"github.com/iulian509/realtime-messaging/internal/metrics"
 	"github.com/iulian509/realtime-messaging/subscriber/internal/handlers"
 	"github.com/iulian509/realtime-messaging/subscriber/internal/mq"

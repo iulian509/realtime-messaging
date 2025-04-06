@@ -2,7 +2,7 @@ FROM golang:1.24.2-alpine
 
 WORKDIR /app
 
-COPY config/ ./config/
+COPY internal/ ./internal/
 COPY auth-cli/ ./auth-cli
 COPY go.mod go.sum ./
 

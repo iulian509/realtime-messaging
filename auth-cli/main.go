@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/iulian509/realtime-messaging/config"
+	"github.com/iulian509/realtime-messaging/internal/config"
 )
 
 func main() {

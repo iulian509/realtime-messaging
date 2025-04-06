@@ -1,6 +1,72 @@
 # realtime-messaging
 Real time pubsub messaging with Golang and Websockets
 
+## Project structure
+```
+.
+├── LICENSE
+├── README.md
+├── auth-cli                        # CLI tool to generate JWT tokens to authenticate each WebSocket connection
+│   └── main.go
+├── demo                            # CLI tool with a basic demo that shows how everything works automatically
+│   └── main.go
+├── docker                          # Docker configuration of each CLI tool and microservice
+│   ├── auth-cli
+│   │   └── Dockerfile
+│   ├── demo
+│   │   └── Dockerfile
+│   ├── publisher
+│   │   └── Dockerfile
+│   └── subscriber
+│       └── Dockerfile
+├── docker-compose.yml              # Docker Compsoe configuration for running all the services
+├── go.mod
+├── go.sum
+├── grafana                         # Grafana and dashboard configuration
+│   ├── dashboards
+│   │   └── dashboard.json
+│   └── provisioning
+│       ├── dashboards
+│       │   └── dashboard.yml
+│       └── datasources
+│           └── datasource.yml
+├── internal                        # Internal package with shared logic used in both microservices and tools
+│   ├── auth                        # Authentication middleware for both microservices
+│   │   └── auth.go
+│   ├── config                      # Load needed configuration from a YAML file
+│   │   ├── config-dev.yml
+│   │   └── config.go
+│   ├── metrics                     # Prometheus middleware
+│   │   └── metrics.go
+│   └── websocket                   # Ping Pong hearbeat for checking the status with the client's connection
+│       └── heartbeat.go
+├── prometheus.yml                  # Prometheus scrapper configuration
+├── publisher                       # Publisher microservice
+│   ├── cmd                         # Publisher microservice entrypoint
+│   │   └── publisher
+│   │       └── main.go
+│   └── internal                    # Publisher microservice internal packages
+│       ├── handlers                # Publisher microservice handler logic
+│       │   ├── dependencies.go
+│       │   ├── publisher.go
+│       │   └── publisher_test.go
+│       └── mq                      # Publisher microservice message queue (NATS) logic
+│           ├── publisher.go
+│           └── publisher_test.go
+└── subscriber                      # Subscriber microservice
+    ├── cmd                         # Subscriber microservice entrypoint
+    │   └── subscriber
+    │       └── main.go
+    └── internal                    # Subscriber microservice internal packages
+        ├── handlers                # Subscriber microservice handler logic
+        │   ├── dependencies.go
+        │   ├── subscriber.go
+        │   └── subscriber_test.go
+        └── mq                      # Subscriber microservice message queue (NATS) logic
+            ├── subscriber.go
+            └── subscriber_test.go
+```
+
 ### Build and run the project
 ```
 docker compose up --build
