@@ -26,7 +26,7 @@ func LoadConfig() (*Config, error) {
 		return nil, fmt.Errorf("failed to get current directory: %v", err)
 	}
 
-	configPath := filepath.Join(cwd, "config", configFile)
+	configPath := filepath.Join(cwd, "internal", "config", configFile)
 
 	yamlData, err := os.ReadFile(configPath)
 	if err != nil {

@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/iulian509/realtime-messaging/config"
+	"github.com/iulian509/realtime-messaging/internal/config"
 )
 
 func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
