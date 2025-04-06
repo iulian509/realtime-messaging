@@ -42,3 +42,7 @@ services:
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
+  auth-cli:
+    build:
+      context: .
+      dockerfile: docker/auth-cli/Dockerfile

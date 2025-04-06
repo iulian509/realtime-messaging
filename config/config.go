@@ -12,6 +12,9 @@ type Config struct {
 	Nats struct {
 		Host string `yaml:"host"`
 	}
+	JWT struct {
+		SecretKey string `yaml:"secretKey"`
+	}
 }
 
 func LoadConfig() (*Config, error) {

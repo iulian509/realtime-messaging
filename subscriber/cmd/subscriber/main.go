@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/iulian509/realtime-messaging/config"
+	"github.com/iulian509/realtime-messaging/internal/auth"
 	"github.com/iulian509/realtime-messaging/internal/metrics"
 	"github.com/iulian509/realtime-messaging/subscriber/internal/handlers"
 	"github.com/iulian509/realtime-messaging/subscriber/internal/mq"
@@ -28,7 +29,7 @@ func main() {
 	}
 
 	http.HandleFunc("/metrics", metrics.PromHandler())
-	http.HandleFunc("/subscribe", metrics.PrometheusMiddleware(deps.SubscriberHandler))
+	http.HandleFunc("/subscribe", metrics.PrometheusMiddleware(auth.AuthMiddleware(deps.SubscriberHandler)))
 
 	err = http.ListenAndServe(":3001", nil)
 	log.Println("subscriber service running on :3001")
