@@ -1,6 +1,8 @@
 # realtime-messaging
 Real time pubsub messaging with Golang and Websockets
 
+This Project has a CI workflow for testing each [PR](https://github.com/iulian509/realtime-messaging/pulls?q=is%3Apr+is%3Aclosed)
+
 ## Project structure
 ```
 .
@@ -19,7 +21,7 @@ Real time pubsub messaging with Golang and Websockets
 │   │   └── Dockerfile
 │   └── subscriber
 │       └── Dockerfile
-├── docker-compose.yml              # Docker Compsoe configuration for running all the services
+├── docker-compose.yml              # Docker Compose configuration for running all the services
 ├── go.mod
 ├── go.sum
 ├── grafana                         # Grafana and dashboard configuration
@@ -87,6 +89,8 @@ websocat ws://localhost:3001/subscribe -H "Authorization: Bearer {JTW_TOKEN}"
 ```
 
 ### To access metrics dashboard click in the following link: [Metrics Dashboard](http://localhost:3002/d/realtime-metrics-dashboard)
+
+![alt text](dashboard.png "Metrics Dashboard")
 
 ### Demo
 
