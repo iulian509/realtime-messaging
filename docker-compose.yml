@@ -46,3 +46,10 @@ services:
     build:
       context: .
       dockerfile: docker/auth-cli/Dockerfile
+  demo:
+    build:
+      context: .
+      dockerfile: docker/demo/Dockerfile
+    depends_on:
+      - publisher
+      - subscriber
